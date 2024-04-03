@@ -1,8 +1,8 @@
 % the first input is used to indicate which element it is (but when merging, this is not implemented),
 % the second input is used to indicate the sign, -1 for - and 0 for +
 % e.g. [1,0;0,-1] means + with label 1 and - with no label
-input_info{1} =[0,-1]; %12
-input_info{2} = [1,-1;2,0]; %13
+input_info{1} =[0,-1;1,0;0,-1;2,0]; %12
+input_info{2} = [0,-1;3,0]; %13
 input_info{3} = []; %14
 input_info{4} = []; %15
 input_info{5} = []; %16
@@ -10,12 +10,12 @@ input_info{6} = []; %23
 input_info{7} = []; %24
 input_info{8} = []; %25
 input_info{9} = []; %26
-input_info{10} = [0,-1]; %34
+input_info{10} = []; %34
 input_info{11} = []; %35
 input_info{12} = []; %36
 input_info{13} = []; %45
 input_info{14} = []; %46
-input_info{15} = [0,-1]; %56
+input_info{15} = []; %56
 input_info{16}=2; % total columns
 input_info{17}=5; % total elements
 input_info{18}=1; % multiplicative factor
@@ -28,7 +28,7 @@ all_possible_table=cell(1);
 % initilization
 all_possible_table{1}=input_info;
 
-% take care of + - at first
+% take care of + - of same label at first
 for i =1:15
     curr_M=input_info{i};
     if isempty(curr_M)
@@ -87,7 +87,7 @@ for i=1:15
         merged_flag=true;
         mf=(factorial(num_unlabeled_minus)/factorial(num_unlabeled_minus-j))*(factorial(num_plus)/factorial(num_plus-j))/(factorial(j));
         % mf=mf*nchoosek(num_plus,j);
-        for l=1:size(all_possible_table)
+        for l=1:size(all_possible_table,2)
             curr_input_info=all_possible_table{l};
             curr_input_info{17}=curr_input_info{17}-j;
             curr_input_info{18}=curr_input_info{18}*mf;
