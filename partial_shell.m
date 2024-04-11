@@ -1,8 +1,8 @@
 % the first input is used to indicate which element it is (but when merging, this is not implemented),
 % the second input is used to indicate the sign, -1 for - and 0 for +
 % e.g. [1,0;0,-1] means + with label 1 and - with no label
-input_info{1} =[0,-1;1,0;0,-1;2,0]; %12
-input_info{2} = [0,-1;3,0]; %13
+input_info{1} =[]; %12
+input_info{2} = []; %13
 input_info{3} = []; %14
 input_info{4} = []; %15
 input_info{5} = []; %16
@@ -15,11 +15,13 @@ input_info{11} = []; %35
 input_info{12} = []; %36
 input_info{13} = []; %45
 input_info{14} = []; %46
-input_info{15} = []; %56
+input_info{15} = [0,-1;0,-1;2,0;1,0]; %56
 input_info{16}=2; % total columns
-input_info{17}=5; % total elements
+input_info{17}=4; % total elements
 input_info{18}=1; % multiplicative factor
 input_info{19}=1; % pairing number
+filePath = './results/two_mark_c_11.txt';
+filePath = './results/randomrandom.txt';
 
 indices_info=[1,2;1,3;1,4;1,5;1,6;2,3;2,4;2,5;2,6;3,4;3,5;3,6;4,5;4,6;5,6];
 rows_info=[0,1,2,3,4,5;1,0,6,7,8,9;2,6,0,10,11,12;3,7,10,0,13,14;4,8,11,13,0,15;5,9,12,14,15,0];
@@ -51,6 +53,7 @@ for i =1:15
         end
     end
 end
+all_possible_table{1}=input_info;
 
 % minus_plus_case
 for i=1:15
@@ -423,11 +426,14 @@ end
 for i=1:size(all_possible_table,2)
     curr_info=all_possible_table{i};
     curr_table=cell(1,15);
+    output_table=cell(1,15);
     for j=1:15
         if isempty(curr_info{j})
             curr_table{j}=[];
+            output_table{j}=[];
         else
             curr_table{j}=curr_info{j}(:,2)';
+            output_table{j}=curr_info{j};
         end
     end
 
@@ -437,7 +443,29 @@ for i=1:size(all_possible_table,2)
         pairing_number=compute_net_pairing_core(curr_table);
     end
     all_possible_table{i}{19}=pairing_number;
+
+    s = formatMatrices(output_table);
+    fileID = fopen(filePath, 'a');
+    if fileID == -1
+        error('Failed to open the file.');
+    end
+    
+    fprintf(fileID, '%s\n', '\item');
+    fprintf(fileID, '%s\n\n', 'table:');
+    fprintf(fileID, '%s\n', s);
     k=curr_info{17}-curr_info{16};
+    fprintf(fileID, 'value of k is: %d;\n', k);
+    fprintf(fileID, 'net paring number is: %d;\n', pairing_number);
+    denominator=1;
+    for j=1:k
+        denominator=j*(j+2)*(j+4)*denominator;
+    end
+    fprintf(fileID, 'denominator is: %d;\n \n', denominator);
+    fprintf(fileID, 'factor for this term is: \n');
+    fprintf(fileID, '$$\\frac{O(t)}{N(\\frac{t}{(1-(\\mu_4-3)t)^3})}(\\frac{t}{(1-(\\mu_4-3)t)^3})^{%d} \\frac{d^{%d}N}{dt^{%d}}(\\frac{t}{(1-(\\mu_4-3)t)^3})\\frac{%d}{%d}$$\n\n',k,k,k,pairing_number,denominator);
+    % TO-DO: write the mathematica form
+    % Close the file
+    fclose(fileID);
 end
 
 % merge minus and plus in M for j times
@@ -578,4 +606,51 @@ for i = 1:length(C)
     % Update the last row index
     lastRow = lastRow + numRows;
 end
+end
+
+function outputTable = formatMatrices(input_info)
+    % Initialize the output table with the header row
+    indices = ["12", "13", "14", "15", "16", "23", "24", "25", "26", "34", "35", "36", "45", "46", "56"];
+    headerRow = strjoin(indices, " & ");
+    
+    % Start building the output as a string, including LaTeX table structure
+    outputTable = "\begin{table}[H] \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|} \hline ";
+    outputTable = outputTable + headerRow + " \\ \hline ";
+    
+    % Determine the maximum number of rows among all matrices for row iteration
+    maxRows = max(cellfun(@(c) size(c, 1), input_info));
+
+    % Iterate through each possible row
+    for rowIdx = 1:maxRows
+        rowContent = strings(1, length(input_info)); % Initialize row content
+        
+        for matrixIdx = 1:length(input_info)
+            matrix = input_info{matrixIdx};
+            
+            if rowIdx <= size(matrix, 1) % Check if the current matrix has this row
+                % Convert first element to character
+                charPart = char(matrix(rowIdx, 1) + 96);
+                
+                % Determine the sign based on the second element
+                if matrix(rowIdx, 2) == -1
+                    signPart = '-';
+                else
+                    signPart = '+';
+                end
+                
+                rowContent(matrixIdx) = strcat(charPart, signPart);
+            else
+                rowContent(matrixIdx) = " ";
+            end
+        end
+        
+        % Add row to outputTable if it's not just empty strings
+        if any(rowContent ~= " ")
+            outputRow = strjoin(rowContent, " & ");
+            outputTable = outputTable + outputRow + " \\ \hline ";
+        end
+    end
+    
+    % Close the LaTeX table structure
+    outputTable = outputTable + "\end{tabular} \end{table}";
 end
