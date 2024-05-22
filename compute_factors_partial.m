@@ -1,50 +1,5 @@
-% the first input is used to indicate which element it is (but when merging, this is not implemented),
-% the second input is used to indicate the sign, -1 for - and 0 for +
-% e.g. [1,0;0,-1] means + with label 1 and - with no label
-input_info{1} =[]; %12
-input_info{2} = []; %13
-input_info{3} = []; %14
-input_info{4} = []; %15
-input_info{5} = []; %16
-input_info{6} = []; %23
-input_info{7} = []; %24
-input_info{8} = []; %25
-input_info{9} = []; %26
-input_info{10} = [2,0]; %34
-input_info{11} = [0,-1]; %35
-input_info{12} = []; %36
-input_info{13} = []; %45
-input_info{14} = [0,-1]; %46
-input_info{15} = [1,0]; %56
-input_info{16}=2; % total columns
-input_info{17}=4; % total elements
-input_info{18}=1; % multiplicative factor
-input_info{19}=1; % pairing number
-input_info{20}=1; % shell sign
-input_info{21}=1; % operation sign
-
-filePath = './results/two_mark_b_3.txt';
-
-% first compute shell sign
-% do not use -1 and 0 as element label
-shell_info{1} =[]; %12
-shell_info{2} = []; %13
-shell_info{3} = []; %14
-shell_info{4} = []; %15
-shell_info{5} = []; %16
-shell_info{6} = []; %23
-shell_info{7} = []; %24
-shell_info{8} = []; %25
-shell_info{9} = []; %26
-shell_info{10} = []; %34
-shell_info{11} = []; %35
-shell_info{12} = []; %36
-shell_info{13} = []; %45
-shell_info{14} = []; %46
-shell_info{15} = []; %56
-shell_table=[];
-input_info{20}=compute_shell_sign(shell_info,shell_table)
-% input_info{21}=input_info{20}*input_info{21};
+% compute factors given a partial shell (function version of partial_shell.m)
+function latex_string=compute_factors_partial(input_info)
 
 % initialization
 indices_info=[1,2;1,3;1,4;1,5;1,6;2,3;2,4;2,5;2,6;3,4;3,5;3,6;4,5;4,6;5,6];
@@ -452,6 +407,8 @@ while table_index<=size(all_possible_table,2)
 end
 
 % use all possible table to obtain the generating function
+latex_string='(';
+
 for i=1:size(all_possible_table,2)
     curr_info=all_possible_table{i};
     curr_table=cell(1,15);
@@ -473,30 +430,22 @@ for i=1:size(all_possible_table,2)
     end
     all_possible_table{i}{19}=pairing_number;
 
-    s = formatMatrices(output_table);
-    fileID = fopen(filePath, 'a');
-    if fileID == -1
-        error('Failed to open the file.');
-    end
-    
-    fprintf(fileID, '%s\n', '\item');
-    fprintf(fileID, '%s\n\n', 'table:');
-    fprintf(fileID, '%s\n', s);
+
     k=curr_info{17}-curr_info{16};
-    fprintf(fileID, 'value of k is: %d;\n', k);
-    fprintf(fileID, 'net paring number is: %d;\n', pairing_number*curr_info{20}*curr_info{21});
-    fprintf(fileID, 'multiplicative factor is: %d;\n', curr_info{18});
     denominator=1;
     for j=1:k
         denominator=j*(j+2)*(j+4)*denominator;
     end
-    fprintf(fileID, 'denominator is: %d;\n \n', denominator);
-    fprintf(fileID, 'factor for this term is: \n');
-    fprintf(fileID, '$$\\frac{O(t)}{N(\\frac{t}{(1-(\\mu_4-3)t)^3})}(\\frac{t}{(1-(\\mu_4-3)t)^3})^{%d} \\frac{d^{%d}N}{dt^{%d}}(\\frac{t}{(1-(\\mu_4-3)t)^3})\\frac{%d}{%d}$$\n\n',k,k,k,pairing_number*curr_info{20}*curr_info{21},denominator);
-    % TO-DO: write the mathematica form
-    % Close the file
-    fclose(fileID);
+    s=sprintf('%d(O0fun[t]/N0fun[s])(s^%d)(D[N0fun[s], {s, %d}])(%d/%d)+',curr_info{18},k,k,pairing_number*curr_info{20}*curr_info{21},denominator);
+    % s=sprintf('\\frac{O(t)}{N(\\frac{t}{(1-(\\mu_4-3)t)^3})}(\\frac{t}{(1-(\\mu_4-3)t)^3})^{%d} \\frac{d^{%d}N}{dt^{%d}}(\\frac{t}{(1-(\\mu_4-3)t)^3})\\frac{%d}{%d}+',k,k,k,pairing_number*curr_info{20}*curr_info{21},denominator);
+
+    latex_string=append(latex_string,s);
+    
 end
+latex_string(end) = ')';
+
+end
+
 
 % merge minus and plus in M for j times
 function M_modified = mergeMinusPlus(M,j)

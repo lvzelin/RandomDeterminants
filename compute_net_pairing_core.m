@@ -10,7 +10,7 @@ load('column_splits_info.mat');
 % sign_table{7} = []; %24
 % sign_table{8} = []; %25
 % sign_table{9} = []; %26
-% sign_table{10} = [0,-1]; %34
+% sign_table{10} = []; %34
 % sign_table{11} = []; %35
 % sign_table{12} = []; %36
 % sign_table{13} = []; %45
@@ -36,6 +36,7 @@ for i=1:15
     total_elements=total_elements+num_pos*2;
     total_placeholders=total_placeholders+size(A,2);
 end
+
 num_cols=total_elements/6;
 placeholder_index=1;
 ordering_size=zeros(total_placeholders,1);
@@ -154,6 +155,7 @@ nsix=[1,2,3,4,5,6];
 y=1;
 % construct table
 % track where to put
+% now put + and - at same time
 cur_index=ones(6,1);
 for i=1:15
     A=info{i};
@@ -168,12 +170,7 @@ for i=1:15
             T(cur_rows(2),second_col)=y;
             y=y+1;
         end
-    end
-end
 
-for i=1:15
-    A=info{i};
-    for j=1:size(A,1)
         if A(j,2)==-1
             cur_rows=setdiff(nsix,indices_info(i,:));
 
@@ -187,6 +184,7 @@ for i=1:15
         end
     end
 end
+
 end
 
 function split_string=createElementSplit(s, split)
@@ -255,52 +253,45 @@ end
 function overall_perm_sign = calculate_sign(S,E,T)
 positive_pairing='';
 negative_pairing='';
+
+index_dict= containers.Map('KeyType', 'char', 'ValueType', 'char');
 for i=1:size(E,2)
     pairing=E{i};
     if length(pairing)==2
-        positive_pairing=append(positive_pairing,pairing);
+        % positive_pairing=append(positive_pairing,pairing);
+        key = pairing;
+        v=i;
+        if ~isKey(index_dict, key)
+            index_dict(key) = int2str(v);
+        else
+            to_store=strcat('|',int2str(v));
+            index_dict(key) = append(index_dict(key),to_store);
+        end
     else
-        negative_pairing=append(negative_pairing,pairing);
+        % negative_pairing=append(negative_pairing,pairing);
+        key1 = pairing(1:2);
+        key2 = pairing(3:4);
+        v=i;
+        if ~isKey(index_dict, key1)
+            index_dict(key1) = int2str(v);
+        else
+            to_store=strcat('|',int2str(v));
+            index_dict(key1) = append(index_dict(key1),to_store);
+        end
+
+        if ~isKey(index_dict, key2)
+            index_dict(key2) = int2str(v);
+        else
+            to_store=strcat('|',int2str(v));
+            index_dict(key2) = append(index_dict(key2),to_store);
+        end
     end
 end
 
-% first put positive pairing accordingly then negative pairing
-index_dict= containers.Map('KeyType', 'char', 'ValueType', 'char');
-for i=1:2:length(positive_pairing)
-    key = positive_pairing(i:i+1);
-    v=(i+1)/2;
-    if ~isKey(index_dict, key)
-        index_dict(key) = int2str(v);
-    else
-        to_store=strcat('|',int2str(v));
-        index_dict(key) = append(index_dict(key),to_store);
-    end
-end
-
-for i=1:4:length(negative_pairing)
-    key1 = negative_pairing(i:i+1);
-    key2 = negative_pairing(i+2:i+3);
-    v=(i+3)/4+length(positive_pairing)/2;
-    if ~isKey(index_dict, key1)
-        index_dict(key1) = int2str(v);
-    else
-        to_store=strcat('|',int2str(v));
-        index_dict(key1) = append(index_dict(key1),to_store);
-    end
-
-    if ~isKey(index_dict, key2)
-        index_dict(key2) = int2str(v);
-    else
-        to_store=strcat('|',int2str(v));
-        index_dict(key2) = append(index_dict(key2),to_store);
-    end
-end
-
-% First construct the corresponding matrix M from S
+% construct the corresponding matrix M from S
 index_info=stringToMatrix(S);
 order_index_info=sortrows(index_info);
 M=zeros(6,size(index_info,1)/3);
-
 
 for i=1:size(index_info,1)/3
     for j=1:3
@@ -318,11 +309,11 @@ for i=1:size(index_info,1)/3
             firstNumberStr = curr_info;
         end
         index_dict(key)=curr_info;
-        
+
         M(index_info((i-1)*3+j,:),i)=str2num(firstNumberStr);
     end
 end
-% M
+M;
 
 T_sign=1;
 for row = 1:size(T, 1)

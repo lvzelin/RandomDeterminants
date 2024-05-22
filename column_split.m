@@ -1,20 +1,20 @@
-% one_dict = createDictionary();
-% [col_dict,net_dict]=create_column_dict(one_dict);
-% keysList = keys(col_dict);
+one_dict = createDictionary();
+[col_dict,net_dict]=create_column_dict(one_dict);
+keysList = keys(col_dict);
 % save('column_splits_info.mat');
 
 % s='121314252635364546'
 col_dict('121314252635364546')
 s='123456132546'
-calculate_sign(s)
+calculate_sign(s);
 % compute_net_number(m)
-%
-% for i = 1:length(keysList)
-%     if length(keysList{i})==18
-%         disp(['Key: ', keysList{i}, ', Value: ', num2str(net_dict(keysList{i}))]);
-%     end
-%     % disp(['Key: ', keysList{i}, ', Value: ', num2str(net_dict(keysList{i}))]);
-% end
+
+for i = 1:length(keysList)
+    if length(keysList{i})==18
+        disp(['Key: ', keysList{i}, ', Value: ', num2str(net_dict(keysList{i}))]);
+    end
+    % disp(['Key: ', keysList{i}, ', Value: ', num2str(net_dict(keysList{i}))]);
+end
 
 function [col_dict,net_dict]=create_column_dict(one_dict)
 keysList = keys(one_dict);
