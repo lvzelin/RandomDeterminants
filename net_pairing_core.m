@@ -1,20 +1,20 @@
 % non-function version
 load('column_splits_info.mat');
 % input with a cell that has info about + - and no specific number
-sign_table{1} =[]; %12
+sign_table{1} =[-1,-1,0]; %12
 sign_table{2} = []; %13
 sign_table{3} = []; %14
 sign_table{4} = []; %15
-sign_table{5} = [0,-1]; %16
+sign_table{5} = []; %16
 sign_table{6} = []; %23
 sign_table{7} = []; %24
 sign_table{8} = []; %25
-sign_table{9} = [0,-1]; %26
+sign_table{9} = []; %26
 sign_table{10} = []; %34
-sign_table{11} = []; %35
+sign_table{11} = [-1]; %35
 sign_table{12} = []; %36
 sign_table{13} = []; %45
-sign_table{14} = []; %46
+sign_table{14} = [-1]; %46
 sign_table{15} = []; %56
 
 % initialization
@@ -36,7 +36,8 @@ for i=1:15
     total_elements=total_elements+num_pos*2;
     total_placeholders=total_placeholders+size(A,2);
 end
-
+total_placeholders
+total_elements
 num_cols=total_elements/6;
 placeholder_index=1;
 ordering_size=zeros(total_placeholders,1);
@@ -54,7 +55,7 @@ for i=1:15
     end
 end
 
-canonicalPTable=createCanonicalPositive(input_info)
+canonicalPTable=createCanonicalPositive(input_info);
 % assumed to start from 1 (to_do: get the min)
 % convert the -1 (-) into possible 0 (+) places, and get the canonical forms
 max_element=0;
@@ -126,10 +127,10 @@ for i=1:size(canonical_forms,2)
             start=(j-1)*length(s)+1;
             endp=j*length(s);
             curr_split=all_cols(start:endp)
-            element_split
-            % TO-DO: mistake here
-            curr_sign=calculate_sign(curr_split,element_split,canonicalPTable)
-            v=net_dict(key);
+            element_split;
+            curr_sign=calculate_sign(curr_split,element_split,canonicalPTable);
+            v=net_dict(key)
+            curr_sign
             p=p+net_dict(key)*curr_sign;
         end
     end
@@ -345,7 +346,7 @@ for i=1:size(index_info,1)/3
         M(index_info((i-1)*3+j,:),i)=str2num(firstNumberStr);
     end
 end
-M
+M;
 
 T_sign=1;
 for row = 1:size(T, 1)

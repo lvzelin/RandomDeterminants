@@ -1,9 +1,10 @@
 % given a table of marks, generate all possible partial shells
 % even some variables are named latex_something, it might not be in the
 % latex formats
+% for mu_5=10 mu_3
 tic
-table_input=[1,0,0,0,0,0;0,2,0,0,0,0;0,0,3,0,0,0]';
-filePath = './results/three_mark_8.txt';
+table_input=[1,2,0,0,0,0;0,0,3,0,0,0]';
+filePath = './results/three_mark_7_new.txt';
 
 num_occurrences=zeros(max(table_input(:)),1);
 max_element=max(table_input(:));
@@ -97,12 +98,16 @@ for i=1:max_element
 end
 
 % display
-for j=1:size(generated_second_stage_shell,2)
-    generated_second_stage_shell{j}
-end
-size(generated_second_stage_shell,2)
+% for j=1:size(generated_second_stage_shell,2)
+%     j;
+%     generated_second_stage_shell{j};
+% end
+% size(generated_second_stage_shell,2)
 
 for j=1:size(generated_second_stage_shell,2)
+    if mod(j,10)==0
+        j
+    end
     curr_second_stage_table=generated_second_stage_shell{j};
     mark_table_latex_string=latex_output(curr_second_stage_table);
     % now the labeled information can be deleted
@@ -122,6 +127,7 @@ for j=1:size(generated_second_stage_shell,2)
     % first we create the shell_info and shell_table for each partial shell
     % in the list of partial shells
     for i=1:size(partial_shells,2)
+        partial_shells{i};
         input_info=getInputInfo(partial_shells{i});
         partial_shell_string=compute_factors_partial(input_info);
         fprintf(fileID, '+%s\n', partial_shell_string);
@@ -412,7 +418,7 @@ switch s
     case 'xxaaaa'
         latex_string='(((Subscript[\[Mu], 4] - 3) t) / (1 - (Subscript[\[Mu], 4] - 3) t))';
     case 'xxxaaa'
-        latex_string='( (Subscript[\[Mu], 3] t / (1 + Subscript[\[Mu], 3]^2 t)) * ((1 + (2 Subscript[\[Mu], 4]- 3) t) / (1 - (Subscript[\[Mu], 4] - 3) t)))';
+        latex_string='((Subscript[\[Mu], 3] t/(1 + Subscript[\[Mu], 3]^2 t))*((1 + 2 ( Subscript[\[Mu], 4] - 3) t)/(1 - (Subscript[\[Mu], 4] - 3) t)))';
     otherwise
         disp(s)
 end

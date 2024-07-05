@@ -1,6 +1,5 @@
 % compute factors given a partial shell (function version of partial_shell.m)
 function latex_string=compute_factors_partial(input_info)
-
 % initialization
 indices_info=[1,2;1,3;1,4;1,5;1,6;2,3;2,4;2,5;2,6;3,4;3,5;3,6;4,5;4,6;5,6];
 rows_info=[0,1,2,3,4,5;1,0,6,7,8,9;2,6,0,10,11,12;3,7,10,0,13,14;4,8,11,13,0,15;5,9,12,14,15,0];
@@ -97,7 +96,7 @@ while table_index<=size(all_possible_table,2)
     for i=1:15
         for j=i:15
             for k=j:15
-                if isempty(intersect(indices_to_row(i,:),indices_to_row(j,:))) & isempty(intersect(indices_to_row(k,:),indices_to_row(j,:)))&isempty(intersect(indices_to_row(k,:),indices_to_row(j,:)))
+                if isempty(intersect(indices_to_row(i,:),indices_to_row(j,:))) & isempty(intersect(indices_to_row(k,:),indices_to_row(j,:)))&isempty(intersect(indices_to_row(k,:),indices_to_row(i,:)))
                     i_matrix=curr_input_info{i};
                     j_matrix=curr_input_info{j};
                     k_matrix=curr_input_info{k};
@@ -406,6 +405,18 @@ while table_index<=size(all_possible_table,2)
     table_index=table_index+1;
 end
 
+% remove all the duplicates
+all_possible_table_strings=cell(size(all_possible_table));
+for i=1:size(all_possible_table,2)
+    all_possible_table_strings{i}=cell_to_string(all_possible_table{i});
+end
+all_possible_table_strings=unique(all_possible_table_strings,'stable');
+new_all_possible_table=cell(size(all_possible_table_strings));
+for i=1:size(all_possible_table_strings,2)
+    new_all_possible_table{i}=string_to_cell(all_possible_table_strings{i});
+end
+all_possible_table=new_all_possible_table;
+
 % use all possible table to obtain the generating function
 latex_string='(';
 
@@ -443,7 +454,6 @@ for i=1:size(all_possible_table,2)
     
 end
 latex_string(end) = ')';
-
 end
 
 
@@ -512,26 +522,32 @@ end
 
 end
 
-% this function works for both two and three minuses
 function p=sign_mergeMinus(i_index,j_index,k_index,j,table)
 if 0==mod(j,2)
     p=1;
     return
 end
 p=1;
+sorted_indices=sort([i_index,j_index,k_index]);
+i_index=sorted_indices(1);
+j_index=sorted_indices(2);
+k_index=sorted_indices(3);
+
 indices_info=[1,2;1,3;1,4;1,5;1,6;2,3;2,4;2,5;2,6;3,4;3,5;3,6;4,5;4,6;5,6];
 for i=i_index+1:j_index-1
 
     curr_index=indices_info(i,:);
     curr_matrix=table{i};
+    
     if isempty(intersect(indices_info(i_index,:),curr_index))
         continue
     end
+
     p=p*(-1)^size(curr_matrix,1);
 end
 
 for i=j_index+1:k_index-1
-    
+
     curr_index=indices_info(i,:);
     curr_matrix=table{i};
     if isempty(intersect(indices_info(k_index,:),curr_index))
@@ -662,3 +678,34 @@ function outputTable = formatMatrices(input_info)
     % Close the LaTeX table structure
     outputTable = outputTable + "\end{tabular} \end{table}";
 end
+
+
+function s=cell_to_string(C)
+s='';
+for i=1:15
+    s=append(s,sortrows(mat2str(C{i})));
+    s=append(s,'|');
+end
+for i=16:21
+    s=append(s,num2str(C{i}));
+    s=append(s,'|');
+end
+end
+
+function C = string_to_cell(s)
+    C = cell(1, 21);  % Initialize the cell array
+    % Split the string into two parts: before and after the first '|'
+    parts = split(s, '|');
+    
+    % Extract the first 15 cells using eval
+    for i = 1:15
+        C{i} = eval(parts{i});
+    end
+    
+    % Extract the remaining 6 cells
+    for i = 16:21
+        C{i} = str2double(parts{i});
+    end
+
+end
+

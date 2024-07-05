@@ -1,18 +1,15 @@
+clear
 one_dict = createDictionary();
 [col_dict,net_dict]=create_column_dict(one_dict);
 keysList = keys(col_dict);
-% save('column_splits_info.mat');
+save('column_splits_info.mat');
 
-% s='121314252635364546'
-col_dict('121314252635364546')
-s='123456132546'
-calculate_sign(s);
 % compute_net_number(m)
 
 for i = 1:length(keysList)
-    if length(keysList{i})==18
-        disp(['Key: ', keysList{i}, ', Value: ', num2str(net_dict(keysList{i}))]);
-    end
+    % if length(keysList{i})==18
+    %     disp(['Key: ', keysList{i}, ', Value: ', num2str(net_dict(keysList{i}))]);
+    % end
     % disp(['Key: ', keysList{i}, ', Value: ', num2str(net_dict(keysList{i}))]);
 end
 
@@ -34,6 +31,7 @@ for i=1:16
                         end
                         matrix_form=stringToMatrix(current_string);
                         net_number=compute_net_number(matrix_form);
+
                         matrix_form=sortrows(matrix_form);
 
                         key = reshape(num2str(matrix_form'), 1, []);
@@ -67,7 +65,9 @@ end
 
 % First we compute the number of different column placement, after placing
 % all the columns, we can swap two elements if they have same pairing
+
 function net_number = compute_net_number(M)
+M;
 % Check the dimensions of M
 [m, n] = size(M);
 if mod(m, 3) ~= 0 || n ~= 2
@@ -84,6 +84,10 @@ for i = 1:k
     cell_matrices{i} = M(start_idx:end_idx, :);
 end
 
+% for i=1:k
+%     cell_matrices{i};
+% end
+
 % Reshape each (3,2) matrix into a row of 6 elements and concatenate
 all_matrices_as_rows = cellfun(@(x) reshape(x', 1, []), cell_matrices, 'UniformOutput', false);
 concatenated_rows = vertcat(all_matrices_as_rows{:});
@@ -97,6 +101,7 @@ count = 1;
 results = [];
 
 for i = 2:size(row_m_sorted, 1)
+
     if isequal(row_m_sorted(i,:), current_row)
         % If current row is the same as the previous one, increase count
         count = count + 1;
@@ -104,10 +109,11 @@ for i = 2:size(row_m_sorted, 1)
         % If current row is different, store the count in results array
         results = [results, count];
         % Move to the next row
-        current_row = m_sorted(i,:);
+        current_row = row_m_sorted(i,:);
         count = 1; % reset count
     end
 end
+
 % Check for the last group of rows
 results = [results, count];
 
@@ -133,9 +139,10 @@ end
 % Check for the last group of rows
 results = [results, count];
 for i=1:length(results)
-    net_number=net_number*results(i);
+    net_number=net_number*factorial(results(i));
 end
 end
+
 
 function t = multinomial(M)
 % Input:
