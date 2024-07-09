@@ -2,10 +2,52 @@
 % even some variables are named latex_something, it might not be in the
 % latex formats
 % for mu_5=10 mu_3
-clear
+
+% clear
 tic
-table_input=[1,2,0,0,0,0;0,0,3,0,0,0]';
-filePath = './results/testtest.txt';
+
+% 3-mark
+% table_input_list{1}=[1,1,1,0,0,0]';
+% table_input_list{2}=[1,1,2,0,0,0]';
+% table_input_list{3}=[1,2,3,0,0,0]';
+% table_input_list{4}=[1,1,0,0,0,0;0,0,1,0,0,0]';
+% table_input_list{5}=[1,1,0,0,0,0;0,0,2,0,0,0]';
+% table_input_list{6}=[1,2,0,0,0,0;0,0,1,0,0,0]';
+% table_input_list{7}=[1,2,0,0,0,0;0,0,3,0,0,0]';
+% table_input_list{8}=[1,0,0,0,0,0;0,2,0,0,0,0;0,0,3,0,0,0]';
+
+table_input_list{1}=[1,1,1,1,0,0]';
+table_input_list{2}=[1,1,1,2,0,0]';
+table_input_list{3}=[1,1,2,3,0,0]';
+table_input_list{4}=[1,2,3,4,0,0]';
+table_input_list{5}=[1,1,0,0,0,0;0,0,1,1,0,0]';
+table_input_list{6}=[1,1,0,0,0,0;0,0,2,2,0,0]';
+table_input_list{7}=[1,2,0,0,0,0;0,0,1,2,0,0]';
+table_input_list{8}=[1,1,0,0,0,0;0,0,2,3,0,0]';
+table_input_list{9}=[1,2,0,0,0,0;0,0,1,3,0,0]';
+table_input_list{10}=[1,1,2,0,0,0;0,0,0,3,0,0]';
+table_input_list{11}=[1,2,3,0,0,0;0,0,0,1,0,0]';
+table_input_list{12}=[1,2,3,0,0,0;0,0,0,4,0,0]';
+table_input_list{13}=[1,2,0,0,0,0;0,0,3,4,0,0]';
+
+table_input_list{14}=[1,1,0,0,0,0;0,0,2,0,0,0;0,0,0,3,0,0]';
+table_input_list{15}=[1,2,0,0,0,0;0,0,3,0,0,0;0,0,0,4,0,0]';
+table_input_list{16}=[1,2,0,0,0,0;0,0,1,0,0,0;0,0,0,3,0,0]';
+table_input_list{17}=[1,0,0,0,0,0;0,1,0,0,0,0;0,0,2,3,0,0]';
+table_input_list{18}=[1,1,0,0,0,0;0,0,1,0,0,0;0,0,0,2,0,0]';
+table_input_list{19}=[1,2,0,0,0,0;0,0,1,0,0,0;0,0,0,1,0,0]';
+table_input_list{20}=[1,0,0,0,0,0;0,2,0,0,0,0;0,0,3,0,0,0;0,0,0,4,0,0]';
+
+table_input_list{21}=[1,1,1,0,0,0;0,0,0,2,0,0]';
+table_input_list{22}=[1,1,2,0,0,0;0,0,0,1,0,0]';
+table_input_list{23}=[1,1,2,2,0,0]';
+% togolist=[5,6,7,8,9,10,11,14,16,17,23]
+togolist=[1,2,3,4]
+for overall_i_index=1:size(togolist,2)
+% for overall_i_index=1:23
+overall_i=togolist(overall_i_index)
+table_input=table_input_list{overall_i};
+filePath = sprintf('./results/4_mark/case%d.txt',overall_i);
 
 num_occurrences=zeros(max(table_input(:)),1);
 max_element=max(table_input(:));
@@ -52,12 +94,12 @@ for i=1: max_element
             row_indices = find(rows_with_i);
             % we check if in each of the columns with four zeros, we can
             % place a known four-column
-            for k=1:size(column_indices)
-                curr_col=curr_table(:,k);
+            for k=1:size(column_indices,2)
+                curr_col=curr_table(:,column_indices(k));
                 zero_rows=any(curr_col == 0, 2);
                 zero_row_indices = find(zero_rows);
                 if isequal(target_rows{i},zero_row_indices')
-                    new_table_2(target_rows{i}, k) = -i;
+                    new_table_2(target_rows{i}, column_indices(k)) = -i;
                     new_second_stage_shell{end+1}=new_table_2;
                 end
             end
@@ -66,7 +108,7 @@ for i=1: max_element
     end
 end
 
-
+% put triples
 for i=1:max_element
     new_second_stage_shell={};
     if num_occurrences(i)==1 || num_occurrences(i)==3
@@ -104,50 +146,49 @@ shell_weight_dict = containers.Map('KeyType', 'char', 'ValueType', 'double');
 for j=1:size(generated_second_stage_shell,2)
     generated_second_stage_shell{j};
 end
-size(generated_second_stage_shell,2);
-
-want_list=[4];
+size_second_stage_shells=size(generated_second_stage_shell,2);
 
 for j=1:size(generated_second_stage_shell,2)
-    j;
+    % if mod(j,10)==0
+    %     j
+    % end
+    
     % if ~ismember(j,want_list)
     %     continue
     % end
+
     curr_second_stage_table=generated_second_stage_shell{j};
-    mark_table_latex_string=latex_output(curr_second_stage_table);
+    [mark_table_latex_string,GF_key]=latex_output(curr_second_stage_table);
     % now the labeled information can be deleted
     curr_second_stage_table=abs(curr_second_stage_table);
     % assign the pairing the generate partial shell, in the output negative
     % elements mean unlabeled
     partial_shells=generate_partial_shell(curr_second_stage_table);
 
-
-    % fprintf(fileID, '%s(\n', mark_table_latex_string);
+    pssize=size(partial_shells,2);
 
     % first we create the shell_info and shell_table for each partial shell
     % in the list of partial shells
     for i=1:size(partial_shells,2)
-
-        partial_shells{i};
-        string_canonical_shell=get_canonical_shell(partial_shells{i});
-        if ~isKey(shell_dict, string_canonical_shell)
-            input_info=getInputInfo(partial_shells{i});
+        % sort first, then use the minus-plus table as its key
+        string_canonical_shell=sortrows(partial_shells{i});
+        input_info=getInputInfo(string_canonical_shell);
+        key=append(GF_key,cell_to_string(input_info));
+        key = strrep(key, '[', '');
+        key = strrep(key, ']', '');
+        if ~isKey(shell_dict, key)
+            % input_info=getInputInfo(partial_shells{i});
             partial_shell_string=compute_factors_partial(input_info);
             output_string=append(mark_table_latex_string,partial_shell_string);
-            shell_dict(string_canonical_shell) = output_string;
-            shell_weight_dict(string_canonical_shell) = 1;
+            shell_dict(key) = output_string;
+            shell_weight_dict(key) = 1;
         else
-            partial_shell_string=shell_dict(string_canonical_shell);
-            shell_weight_dict(string_canonical_shell) = shell_weight_dict(string_canonical_shell)+1;
+            partial_shell_string=shell_dict(key);
+            shell_weight_dict(key) = shell_weight_dict(key)+1;
         end
 
-        % fprintf(fileID, '+%s\n', partial_shell_string);
     end
-    if j==size(generated_second_stage_shell,2)
-        % fprintf(fileID, ')');
-        continue
-    end
-    % fprintf(fileID, ')+\n');
+
 end
 
 % output
@@ -156,7 +197,7 @@ fileID = fopen(filePath, 'w');
         error('Failed to open the file.');
     end
 keysList = keys(shell_dict);
-fprintf(fileID, '(')
+fprintf(fileID, '(');
 for i =1:length(keysList)
     partial_shell_string=shell_dict(keysList{i});
     fprintf(fileID, '%d(%s)',shell_weight_dict(keysList{i}),partial_shell_string);
@@ -164,16 +205,16 @@ for i =1:length(keysList)
         fprintf(fileID, ')\n');
     else
         fprintf(fileID, '+\n');
-
     end
 end
 
 fclose(fileID);
+end
 
 toc
 
 function s=get_canonical_shell(shell)
-    s=mat2str(sortrows(shell));
+    s=sortrows(shell);
 end
 
 % I think there is no need to check if the generated shells are actually
@@ -332,9 +373,31 @@ for i=1:max_element
     end
 end
 
-for i=1:15
-    input_info{i};
+% merge + - of same label 
+for i =1:15
+    curr_M=input_info{i};
+    if isempty(curr_M)
+        continue
+    end
+    firstColumn = curr_M(:,1); % Extract the first column
+    distinctElements = unique(firstColumn);
+    distinctElements=setdiff(distinctElements,0);
+    for j=1:length(distinctElements)
+        a=distinctElements(j);
+        rowsWithA = curr_M(:,1) == a;
+        % Extract the second column elements from these rows
+        outputElements = curr_M(rowsWithA, 2);
+        if length(unique(outputElements))>=2
+            curr_M(rowsWithA, :) = [];
+            input_info{i}=curr_M;
+            if isempty(curr_M)
+                input_info{i}=[];
+            end
+        end
+    end
 end
+
+
 end
 
 
@@ -413,22 +476,32 @@ end
 
 % given a second-stage table (not choosing the pairing of zeros), generate
 % the generating function of this table
-function latex_string=latex_output(M)
+function [latex_string,GF_key]=latex_output(M)
 s='';
+col_list=zeros(1,size(M,2));
+
 for i=1:size(M,2)
     curr_col=M(:,i);
-    col_latex=column_latex_output(curr_col);
+    [col_latex,k]=column_latex_output(curr_col);
     s=append(s,col_latex);
+    col_list(i)=k;
 end
 latex_string=s;
+col_list=sort(col_list);
+GF_key=mat2str(col_list);
+GF_key=GF_key(~isspace(GF_key));
 end
 
 % the input is a column, we first convert it into the canonical form
 % up to three marks
-function latex_string=column_latex_output(col)
+
+% TODO: we may need a double check for the generating function of four
+% columns
+function [latex_string,key]=column_latex_output(col)
 col=column_canonical(col);
 
 s='';
+key=0;
 for i=1:6
     if col(i)<0
         s=append(s,'x');
@@ -443,19 +516,30 @@ end
 switch s
     case 'aaabbb'
         latex_string='((Subscript[\[Mu], 3]^2 t) / (1 + Subscript[\[Mu], 3]^2 t))';
+        key=1;
     case '00aaaa'
         latex_string='((Subscript[\[Mu], 4] - 3) t / (1 - (Subscript[\[Mu], 4] - 3) t))';
+        key=2;
     case 'x00aaa'
         latex_string='(Subscript[\[Mu], 3] t / (1 + Subscript[\[Mu], 3]^2 t) / (1 - (Subscript[\[Mu], 4] - 3) t))';
+        key=3;
     case 'xx0000'
-        latex_string='(t (1 / (1 - (Subscript[\[Mu], 4] - 3) t) - 2 Subscript[\[Mu], 3]^2 t / (1 + Subscript[\[Mu], 3]^2 t)) / (1 - (Subscript[\[Mu], 4] - 3) t)^2)';
+        latex_string='(t(1/(1-(Subscript[\[Mu],4]-3)t)-2Subscript[\[Mu], 3]^2 t / (1 + Subscript[\[Mu], 3]^2 t)) / (1 - (Subscript[\[Mu], 4] - 3) t)^2)';
+        key=4;
     case 'xxaaaa'
         latex_string='(((Subscript[\[Mu], 4] - 3) t) / (1 - (Subscript[\[Mu], 4] - 3) t))';
+        key=5;
     case 'xxxaaa'
-        latex_string='((Subscript[\[Mu], 3] t/(1 + Subscript[\[Mu], 3]^2 t))*((1 + 2 ( Subscript[\[Mu], 4] - 3) t)/(1 - (Subscript[\[Mu], 4] - 3) t)))';
+        latex_string='((Subscript[\[Mu],3]t/(1+Subscript[\[Mu],3]^2t))*((1+2(Subscript[\[Mu],4]-3)t)/(1 -(Subscript[\[Mu],4]-3)t)))';
+        key=6;
+    case 'xxxx00'
+        latex_string='t(1+4(-Subscript[\[Mu],3]^2 t)/(1+Subscript[\[Mu], 3]^2 t))(1+7(Subscript[\[Mu],4]-3)t/(1-(Subscript[\[Mu],4]-3)t))';
+        key=6;
     otherwise
         disp(s)
 end
+
+
 end
 
 function s=column_canonical(col)
@@ -472,4 +556,16 @@ for i = 1:length(positive_elements)
     col(col == positive_elements(i)) = ranks(i);
 end
 s=col;
+end
+
+function s=cell_to_string(C)
+s='';
+for i=1:15
+    s=append(s,sortrows(mat2str(C{i})));
+    s=append(s,'|');
+end
+for i=16:21
+    s=append(s,num2str(C{i}));
+    s=append(s,'|');
+end
 end
