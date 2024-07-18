@@ -11,31 +11,76 @@ def is_table_valid(table_input):
     
     for i in range(1, max_element + 1):
         num_occurrences[i-1] = np.sum(table_input == i)
-    print(num_occurrences)
+    
     odd_columns = count_columns_with_odd_zeros(table_input)
     num_triples = np.sum(num_occurrences == 3) + np.sum(num_occurrences == 1)
     num_extra_columns = num_triples - odd_columns
     
     if num_extra_columns % 2 == 1 or num_extra_columns < 0:
-        print('EXCEPTION: extra column')
+        # print('EXCEPTION: extra column')
         return False
     else:
         num_extra_columns //= 2
         return True
 
+# a matrix is sequential if num of element i >= num of element j if i<j 
+def is_sequential(matrix):
+    n=matrix.max()
+    for i in range(1,n):
+        if np.sum(matrix == i) < np.sum(matrix == i+1):
+            return False
+
+    return True
+
+# two matrices are isomorphic if we can obtain one from the other by permuting rows, permuting columns and permuting elements
+def are_isomorphic(matrix1, matrix2):
+    if matrix1.shape != matrix2.shape:
+        return False
+    
+    rows, cols = matrix1.shape
+    unique_elements = np.unique(matrix1)
+
+    for row_perm in permutations(range(rows)):
+        permuted_rows_matrix1 = matrix1[row_perm, :]
+        
+        for col_perm in permutations(range(cols)):
+            permuted_matrix1 = permuted_rows_matrix1[:, col_perm]
+            for elem_perm in permutations(unique_elements):
+                mapping = {old: new for old, new in zip(unique_elements, elem_perm)}
+                transformed_matrix = np.vectorize(mapping.get)(permuted_matrix1)
+                
+                if np.array_equal(transformed_matrix, matrix2):
+                    return True
+    return False
+
+
+
+def is_isomorphic_to_any(matrix, matrix_list):
+    for ref_matrix in matrix_list:
+        if are_isomorphic(matrix, ref_matrix):
+            return True
+    return False
+
+def matrix_to_type(matrix, matrix_list):
+    i = 0
+    for ref_matrix in matrix_list:
+        if are_isomorphic(matrix, ref_matrix):
+            return i
+        i=i+1
+    return -1
+
 # first generate all the possible n marked tables
 def generate_all(n):
     rows = 6
     all_matrices = []
-    for cols in range(0,n+1):
-     
+    for cols in range(1,n+1):
+    
         # Generate all possible positions to place n nonzero elements in a matrix with 6 rows and n columns
         positions = list(combinations(range(rows * cols), n))
         
-        print(positions)
+        # print(positions)
         # Generate all possible values combinations for the nonzero elements
         value_combinations = list(product(range(1, n + 1), repeat=n))
-        print(value_combinations)
         for pos in positions:
             for values in value_combinations:
                 # Create a flat matrix with zeros
@@ -47,25 +92,106 @@ def generate_all(n):
                 matrix = np.array(flat_matrix).reshape(rows, cols)
                 
                 # Check if there is any column with only zeros
-                if not any(np.all(matrix[:, col] == 0) for col in range(cols)):
-                    all_matrices.append(matrix)
+                if any(np.all(matrix[:, col] == 0) for col in range(cols)):
+                    continue
+            
+                # Check if any row contains more than one nonzero element
+                if any(np.count_nonzero(matrix[row, :]) > 1 for row in range(rows)):
+                    continue
+
+                # num of element i >= num of element j if i<j
+                if not is_sequential(matrix):
+                    continue
+
+                if not is_table_valid(matrix):
+                    continue
+
+
+                all_matrices.append(matrix)
     
     return all_matrices
 
 
 # Main function
 table_input = np.transpose(np.array([
-    [1,1,1,0,0,0],[0,0,0,1,0,0]
+    [1,0,0,1,0,0],[1,0,2,0,0,0]
 ]))
 
-result = is_table_valid(table_input)
 print(table_input)
-print(result)
 
-n = 2
+# Define the matrices
+one_mark_list = [
+    np.array([[1, 0, 0, 0, 0, 0]]).T,
+]
+
+# [15, 30, 60]
+two_mark_list = [
+    np.array([[1, 1, 0, 0, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0]]).T,
+    np.array([[1, 0, 0, 0, 0, 0], [0, 2, 0, 0, 0, 0]]).T,
+]
+
+# [20, 60, 120, 120, 120, 240, 720, 720]
+three_mark_list = [
+    np.array([[1, 1, 1, 0, 0, 0]]).T,
+    np.array([[1, 1, 2, 0, 0, 0]]).T,
+    np.array([[1, 2, 3, 0, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 2, 0, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 3, 0, 0, 0]]).T,
+    np.array([[1, 0, 0, 0, 0, 0], [0, 2, 0, 0, 0, 0], [0, 0, 3, 0, 0, 0]]).T
+] 
+
+four_mark_list = [
+    np.array([[1, 1, 1, 1, 0, 0]]).T,
+    np.array([[1, 1, 1, 2, 0, 0]]).T,
+    np.array([[1, 1, 2, 3, 0, 0]]).T,
+    np.array([[1, 2, 3, 4, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 2, 2, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 1, 2, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 2, 3, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 1, 3, 0, 0]]).T,
+    np.array([[1, 1, 2, 0, 0, 0], [0, 0, 0, 3, 0, 0]]).T,
+    np.array([[1, 2, 3, 0, 0, 0], [0, 0, 0, 1, 0, 0]]).T,
+    np.array([[1, 2, 3, 0, 0, 0], [0, 0, 0, 4, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 3, 4, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 2, 0, 0, 0], [0, 0, 0, 3, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 3, 0, 0, 0], [0, 0, 0, 4, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 3, 0, 0]]).T,
+    np.array([[1, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 0, 2, 3, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 2, 0, 0]]).T,
+    np.array([[1, 2, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0]]).T,
+    np.array([[1, 0, 0, 0, 0, 0], [0, 2, 0, 0, 0, 0], [0, 0, 3, 0, 0, 0], [0, 0, 0, 4, 0, 0]]).T,
+    np.array([[1, 1, 1, 0, 0, 0], [0, 0, 0, 2, 0, 0]]).T,
+    np.array([[1, 1, 2, 0, 0, 0], [0, 0, 0, 1, 0, 0]]).T,
+    np.array([[1, 1, 2, 2, 0, 0]]).T,
+    np.array([[1, 1, 0, 0, 0, 0], [0, 0, 1, 2, 0, 0]]).T
+]
+
+mark_lists=[[],one_mark_list,two_mark_list,three_mark_list,four_mark_list]
+
+n = 4
 matrices = generate_all(n)
 print(len(matrices))
-# for i, matrix in enumerate(matrices):
-#     print(f"Matrix {i+1}:\n{matrix}\n")
+i=0
+type_list=[0]*len(mark_lists[n])
+for matrix in matrices:
+    i=i+1
+    if i%100==0:
+        print(i)
+
+    type_matrix=matrix_to_type(matrix,mark_lists[n])
+    if type_matrix <0:
+        print(matrix)
+        mark_lists[n].append(matrix)
+        type_list.append[1]
+    else:
+        type_list[type_matrix]=type_list[type_matrix]+1
+print('number of mark: %d' % n)
+print(type_list)
+
+
 
 
