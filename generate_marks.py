@@ -53,6 +53,34 @@ def are_isomorphic(matrix1, matrix2):
                     return True
     return False
 
+# generate all the isomorphic matrices of the input matrix
+def generate_isomorphic_matrices(matrix):
+    rows, cols = matrix.shape
+    unique_elements, counts = np.unique(matrix, return_counts=True)
+    
+    # Group elements by their counts
+    element_groups = {count: [] for count in counts}
+    for element, count in zip(unique_elements, counts):
+        if element != 0:
+            element_groups[count].append(element)
+    
+    isomorphic_matrices = set()
+    
+    for row_perm in permutations(range(rows)):
+        permuted_rows_matrix = matrix[row_perm, :]
+        
+        for col_perm in permutations(range(cols)):
+            permuted_matrix = permuted_rows_matrix[:, col_perm]
+            
+            # Permute non-zero elements within groups of the same count
+            for count, elements in element_groups.items():
+                for elem_perm in permutations(elements):
+                    mapping = {old: new for old, new in zip(elements, elem_perm)}
+                    transformed_matrix = np.vectorize(lambda x: mapping.get(x, x))(permuted_matrix)
+                    
+                    isomorphic_matrices.add(tuple(map(tuple, transformed_matrix)))
+    
+    return [np.array(matrix) for matrix in isomorphic_matrices]
 
 
 def is_isomorphic_to_any(matrix, matrix_list):
@@ -173,23 +201,30 @@ four_mark_list = [
 mark_lists=[[],one_mark_list,two_mark_list,three_mark_list,four_mark_list]
 
 n = 4
-matrices = generate_all(n)
-print(len(matrices))
-i=0
-type_list=[0]*len(mark_lists[n])
-for matrix in matrices:
-    i=i+1
-    if i%100==0:
-        print(i)
+all_matrices = generate_all(n)
 
-    type_matrix=matrix_to_type(matrix,mark_lists[n])
-    if type_matrix <0:
-        print(matrix)
-        mark_lists[n].append(matrix)
-        type_list.append[1]
-    else:
-        type_list[type_matrix]=type_list[type_matrix]+1
-print('number of mark: %d' % n)
+type_list=[0]*len(mark_lists[n])
+total_type_automorphism=[]
+i=0
+for type_matrix in mark_lists[n]:
+    print(i)
+    num_automorphism=len(generate_isomorphic_matrices(type_matrix))
+    type_list[i]=num_automorphism
+    i=i+1
+# for matrix in matrices:
+#     i=i+1
+#     if i%100==0:
+#         print(i)
+
+#     type_matrix=matrix_to_type(matrix,mark_lists[n])
+#     if type_matrix <0:
+#         print(matrix)
+#         mark_lists[n].append(matrix)
+#         type_list.append[1]
+#     else:
+#         type_list[type_matrix]=type_list[type_matrix]+1
+print('number of all possible matrices: ',len(all_matrices))
+print('total number from automorphisms: ',sum(type_list))
 print(type_list)
 
 
