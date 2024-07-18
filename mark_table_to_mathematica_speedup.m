@@ -41,8 +41,9 @@ table_input_list{20}=[1,0,0,0,0,0;0,2,0,0,0,0;0,0,3,0,0,0;0,0,0,4,0,0]';
 table_input_list{21}=[1,1,1,0,0,0;0,0,0,2,0,0]';
 table_input_list{22}=[1,1,2,0,0,0;0,0,0,1,0,0]';
 table_input_list{23}=[1,1,2,2,0,0]';
+table_input_list{24}=[1,1,0,0,0,0;0,0,1,2,0,0]';
 % togolist=[5,6,7,8,9,10,11,14,16,17,23]
-togolist=[1,2,3,4]
+togolist=[3]
 for overall_i_index=1:size(togolist,2)
 % for overall_i_index=1:23
 overall_i=togolist(overall_i_index)
@@ -144,7 +145,7 @@ shell_dict = containers.Map('KeyType', 'char', 'ValueType', 'char');
 shell_weight_dict = containers.Map('KeyType', 'char', 'ValueType', 'double');
 % display
 for j=1:size(generated_second_stage_shell,2)
-    generated_second_stage_shell{j};
+    generated_second_stage_shell{j}
 end
 size_second_stage_shells=size(generated_second_stage_shell,2);
 
@@ -453,7 +454,7 @@ end
 end
 
 function count = countColumnsWithOddZeros(matrix)
-% countColumnsWithFiveZeros counts the number of columns with exactly five zeros
+% countColumnsWithoddZeros counts the number of columns with odd zeros
 % matrix: The input matrix
 
 % Initialize the count
@@ -533,8 +534,8 @@ switch s
         latex_string='((Subscript[\[Mu],3]t/(1+Subscript[\[Mu],3]^2t))*((1+2(Subscript[\[Mu],4]-3)t)/(1 -(Subscript[\[Mu],4]-3)t)))';
         key=6;
     case 'xxxx00'
-        latex_string='t(1+4(-Subscript[\[Mu],3]^2 t)/(1+Subscript[\[Mu], 3]^2 t))(1+7(Subscript[\[Mu],4]-3)t/(1-(Subscript[\[Mu],4]-3)t))';
-        key=6;
+        latex_string='t/(1 - (Subscript[μ, 4] - 3) t) *(1 - 4 t Subscript[μ, 3]^2 / (1 + Subscript[μ, 3]^2 t) - 12 t^2 (Subscript[μ, 4] - 3) Subscript[μ, 3]^2 / ((1 - (Subscript[μ, 4] - 3) t) (1 + Subscript[μ, 3]^2 t)) + 6 t (Subscript[μ, 4] - 3) / (1 - (Subscript[μ, 4] - 3) t) + 3 t^2 (Subscript[μ, 4] - 3)^2 / (1 - (Subscript[μ, 4] - 3) t)^2)';
+        key=7;
     otherwise
         disp(s)
 end
