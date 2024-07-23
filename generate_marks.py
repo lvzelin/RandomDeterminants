@@ -1,5 +1,6 @@
 import numpy as np
 from itertools import combinations,permutations,product
+import math
 
 def count_columns_with_odd_zeros(table):
     return np.sum(np.sum(table == 0, axis=0) % 2 == 1)
@@ -139,13 +140,28 @@ def generate_all(n):
     
     return all_matrices
 
+def get_extra_coef(M):
+    # Flatten the array to a 1D array
+    flat_M = M.flatten()
+    flat_M = flat_M[flat_M != 0]
+
+    # Count the occurrences of each element
+    unique_elements, counts = np.unique(flat_M, return_counts=True)
+    
+    element_perm=1
+    for i in range(6):
+        elements_appearing_i_times = unique_elements[counts == i]
+        num_elements_appearing_i_times = len(elements_appearing_i_times)
+        element_perm=element_perm*math.factorial(num_elements_appearing_i_times)
+
+    num_cols=M.shape[1]
+    return element_perm*math.factorial(num_cols)
+
 
 # Main function
 table_input = np.transpose(np.array([
     [1,0,0,1,0,0],[1,0,2,0,0,0]
 ]))
-
-print(table_input)
 
 # Define the matrices
 one_mark_list = [
@@ -198,24 +214,32 @@ four_mark_list = [
     np.array([[1, 1, 0, 0, 0, 0], [0, 0, 1, 2, 0, 0]]).T
 ]
 
-mark_lists=[[],one_mark_list,two_mark_list,three_mark_list,four_mark_list]
+five_mark_list = [
+    # at least have two columns?
+    np.array([[1, 1, 1, 1, 0, 0], [0, 0, 0, 0, 2, 0]]).T,
+    np.array([[1, 1, 1, 2, 0, 0], [0, 0, 0, 0, 3, 0]]).T,
+]
 
-n = 4
+mark_lists=[[],one_mark_list,two_mark_list,three_mark_list,four_mark_list,five_mark_list]
+
+n = 5
 all_matrices = generate_all(n)
-
+coefs=[]
 type_list=[0]*len(mark_lists[n])
+coefs_list=[0]*len(mark_lists[n])
 total_type_automorphism=[]
 i=0
 for type_matrix in mark_lists[n]:
     print(i)
     num_automorphism=len(generate_isomorphic_matrices(type_matrix))
     type_list[i]=num_automorphism
+    coefs_list[i]=num_automorphism/get_extra_coef(type_matrix)
     i=i+1
+    
 # for matrix in matrices:
 #     i=i+1
 #     if i%100==0:
 #         print(i)
-
 #     type_matrix=matrix_to_type(matrix,mark_lists[n])
 #     if type_matrix <0:
 #         print(matrix)
@@ -223,9 +247,13 @@ for type_matrix in mark_lists[n]:
 #         type_list.append[1]
 #     else:
 #         type_list[type_matrix]=type_list[type_matrix]+1
+
 print('number of all possible matrices: ',len(all_matrices))
 print('total number from automorphisms: ',sum(type_list))
+print('raw numbers:')
 print(type_list)
+print('coefficients:')
+print(coefs_list)
 
 
 
