@@ -42,11 +42,15 @@ table_input_list{21}=[1,1,1,0,0,0;0,0,0,2,0,0]';
 table_input_list{22}=[1,1,2,0,0,0;0,0,0,1,0,0]';
 table_input_list{23}=[1,1,2,2,0,0]';
 table_input_list{24}=[1,1,0,0,0,0;0,0,1,2,0,0]';
+
 % togolist=[5,6,7,8,9,10,11,14,16,17,23]
-togolist=[3]
+% togolist=[5,7]
+
+togolist=[21,22,23,24]
 for overall_i_index=1:size(togolist,2)
-% for overall_i_index=1:23
 overall_i=togolist(overall_i_index)
+% for overall_i_index=1:24
+% overall_i=overall_i_index
 table_input=table_input_list{overall_i};
 filePath = sprintf('./results/4_mark/case%d.txt',overall_i);
 
@@ -145,14 +149,11 @@ shell_dict = containers.Map('KeyType', 'char', 'ValueType', 'char');
 shell_weight_dict = containers.Map('KeyType', 'char', 'ValueType', 'double');
 % display
 for j=1:size(generated_second_stage_shell,2)
-    generated_second_stage_shell{j}
+    generated_second_stage_shell{j};
 end
 size_second_stage_shells=size(generated_second_stage_shell,2);
 
 for j=1:size(generated_second_stage_shell,2)
-    % if mod(j,10)==0
-    %     j
-    % end
     
     % if ~ismember(j,want_list)
     %     continue
@@ -178,7 +179,7 @@ for j=1:size(generated_second_stage_shell,2)
         key = strrep(key, '[', '');
         key = strrep(key, ']', '');
         if ~isKey(shell_dict, key)
-            % input_info=getInputInfo(partial_shells{i});
+            % input_info=getInputInfo(partial_shells{i})
             partial_shell_string=compute_factors_partial(input_info);
             output_string=append(mark_table_latex_string,partial_shell_string);
             shell_dict(key) = output_string;
@@ -187,9 +188,7 @@ for j=1:size(generated_second_stage_shell,2)
             partial_shell_string=shell_dict(key);
             shell_weight_dict(key) = shell_weight_dict(key)+1;
         end
-
     end
-
 end
 
 % output

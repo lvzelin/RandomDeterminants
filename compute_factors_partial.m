@@ -111,7 +111,7 @@ for i=1:15
                 i_matrix=curr_input_info{i};
                 j_matrix=curr_input_info{j};
                 k_matrix=curr_input_info{k};
-                
+
                 if isempty(i_matrix) | isempty(j_matrix) | isempty(k_matrix)
                     table_index=table_index+1;
                     continue
@@ -143,8 +143,8 @@ for i=1:15
                 i_unlabeled=num_i-i_labeled_minus;
                 j_unlabeled=num_j-j_labeled_minus;
                 k_unlabeled=num_k-k_labeled_minus;
-                
-                
+
+
                 % all three to be unlabeled
                 if min([i_unlabeled,j_unlabeled,k_unlabeled])>=1
                     merged_flag=true;
@@ -190,7 +190,6 @@ for i=1:15
         end
     end
 end
-
 % i labeled
 for i=1:15
     for j=i:15
@@ -198,10 +197,10 @@ for i=1:15
             if ~(isempty(intersect(indices_to_row(i,:),indices_to_row(j,:))) & isempty(intersect(indices_to_row(k,:),indices_to_row(j,:)))&isempty(intersect(indices_to_row(k,:),indices_to_row(i,:))))
                 continue
             end
-            
+
             curr_size=size(all_possible_table,2);
             table_index=1;
-            
+
             new_possible_table=cell(1);
             r=1;
             merged_flag=false;
@@ -211,12 +210,12 @@ for i=1:15
                 i_matrix=curr_input_info{i};
                 j_matrix=curr_input_info{j};
                 k_matrix=curr_input_info{k};
-                
+
                 if isempty(i_matrix) | isempty(j_matrix) | isempty(k_matrix)
                     table_index=table_index+1;
                     continue
                 end
-                
+
 
                 % above are basic check, now check if they contain
                 % minus signs and at most one of these minus are
@@ -244,7 +243,7 @@ for i=1:15
                 i_unlabeled=num_i-i_labeled_minus;
                 j_unlabeled=num_j-j_labeled_minus;
                 k_unlabeled=num_k-k_labeled_minus;
-                
+
                 % i labeled
                 if min([i_labeled_minus,j_unlabeled,k_unlabeled])>=1
                     merged_flag=true;
@@ -289,7 +288,6 @@ for i=1:15
     end
 end
 
-
 % j labeled
 for i=1:15
     for j=i:15
@@ -297,10 +295,10 @@ for i=1:15
             if ~(isempty(intersect(indices_to_row(i,:),indices_to_row(j,:))) & isempty(intersect(indices_to_row(k,:),indices_to_row(j,:)))&isempty(intersect(indices_to_row(k,:),indices_to_row(i,:))))
                 continue
             end
-            
+
             curr_size=size(all_possible_table,2);
             table_index=1;
-            
+
             new_possible_table=cell(1);
             r=1;
             merged_flag=false;
@@ -309,12 +307,12 @@ for i=1:15
                 i_matrix=curr_input_info{i};
                 j_matrix=curr_input_info{j};
                 k_matrix=curr_input_info{k};
-                
+
                 if isempty(i_matrix) | isempty(j_matrix) | isempty(k_matrix)
                     table_index=table_index+1;
                     continue
                 end
-                
+
 
                 % above are basic check, now check if they contain
                 % minus signs and at most one of these minus are
@@ -380,13 +378,12 @@ for i=1:15
             end
 
             if merged_flag
-                'jjjj'
-                cell_to_string(curr_input_info)
                 all_possible_table=[all_possible_table,new_possible_table];
             end
         end
     end
 end
+
 
 % k labeled
 for i=1:15
@@ -395,10 +392,10 @@ for i=1:15
             if ~(isempty(intersect(indices_to_row(i,:),indices_to_row(j,:))) & isempty(intersect(indices_to_row(k,:),indices_to_row(j,:)))&isempty(intersect(indices_to_row(k,:),indices_to_row(i,:))))
                 continue
             end
-            
+
             curr_size=size(all_possible_table,2);
             table_index=1;
-            
+
             new_possible_table=cell(1);
             r=1;
             merged_flag=false;
@@ -408,12 +405,12 @@ for i=1:15
                 i_matrix=curr_input_info{i};
                 j_matrix=curr_input_info{j};
                 k_matrix=curr_input_info{k};
-                
+
                 if isempty(i_matrix) | isempty(j_matrix) | isempty(k_matrix)
                     table_index=table_index+1;
                     continue
                 end
-                
+
 
                 % above are basic check, now check if they contain
                 % minus signs and at most one of these minus are
@@ -484,346 +481,330 @@ for i=1:15
     end
 end
 
-% % i labeled
-% while table_index<=size(all_possible_table,2)
-%     'size'
-%     size(all_possible_table,2)
-%     curr_input_info=all_possible_table{table_index};
-%     for i=1:15
-%         for j=i:15
-%             for k=j:15
-%                 if isempty(intersect(indices_to_row(i,:),indices_to_row(j,:))) & isempty(intersect(indices_to_row(k,:),indices_to_row(j,:)))&isempty(intersect(indices_to_row(k,:),indices_to_row(i,:)))
-%                     i_matrix=curr_input_info{i};
-%                     j_matrix=curr_input_info{j};
-%                     k_matrix=curr_input_info{k};
-%                     if isempty(i_matrix) | isempty(j_matrix) | isempty(k_matrix)
-%                         continue
-%                     end
-%
-%                     % above are basic check, now check if they contain
-%                     % minus signs and at most one of these minus are
-%                     % labeled
-%
-%                     num_i=sum(i_matrix(:,2) == -1);
-%                     num_j=sum(j_matrix(:,2) == -1);
-%                     num_k=sum(k_matrix(:,2) == -1);
-%
-%                     col2IsZero = i_matrix(:, 2) == -1;
-%                     col1IsPositive = i_matrix(:, 1) > 0;
-%                     rowsMeetConditions = col2IsZero & col1IsPositive;
-%                     i_labeled_minus = sum(rowsMeetConditions);
-%
-%                     col2IsZero = j_matrix(:, 2) == -1;
-%                     col1IsPositive = j_matrix(:, 1) > 0;
-%                     rowsMeetConditions = col2IsZero & col1IsPositive;
-%                     j_labeled_minus = sum(rowsMeetConditions);
-%
-%                     col2IsZero = k_matrix(:, 2) == -1;
-%                     col1IsPositive = k_matrix(:, 1) > 0;
-%                     rowsMeetConditions = col2IsZero & col1IsPositive;
-%                     k_labeled_minus = sum(rowsMeetConditions);
-%
-%                     i_unlabeled=num_i-i_labeled_minus;
-%                     j_unlabeled=num_j-j_labeled_minus;
-%                     k_unlabeled=num_k-k_labeled_minus;
-%                     new_possible_table=cell(1);
-%                     merged_flag=false;
-%                     r=1;
-%                     % all three to be unlabeled
-%                     if min([i_unlabeled,j_unlabeled,k_unlabeled])>=1
-%                         merged_flag=true;
-%                         % loop through the number of interactions across i j k
-%                         for l=1:min([i_unlabeled,j_unlabeled,k_unlabeled])
-%                             % debug
-%                             mf=(factorial(i_unlabeled)/factorial(i_unlabeled-l))*(factorial(j_unlabeled)/factorial(j_unlabeled-l))*(factorial(k_unlabeled)/factorial(k_unlabeled-l))/(factorial(l))
-%                             % 0 to indicate only merge unlabeled minus
-%                             [new_i,new_j,new_k]=mergeTripleMinus(i_matrix,j_matrix,k_matrix,l,0);
-%                             new_input_info=curr_input_info;
-%                             new_input_info{17}=curr_input_info{17}-2*l;
-%                             new_input_info{18}=curr_input_info{18}*mf;
-%
-%                             new_input_info{i}=new_i;
-%                             new_input_info{j}=new_j;
-%                             new_input_info{k}=new_k;
-%
-%                             new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
-%                             if (isempty(new_input_info{i}))
-%                                 new_input_info{i}=[];
-%                             end
-%                             if (isempty(new_input_info{j}))
-%                                 new_input_info{j}=[];
-%                             end
-%                             if (isempty(new_input_info{k}))
-%                                 new_input_info{k}=[];
-%                             end
-%                             new_possible_table{r}=new_input_info;
-%                             r=r+1;
-%                         end
-%                     end
-%
-%                     % i is labeled and j,k are not labeled
-%                     if min([i_labeled_minus,j_unlabeled,k_unlabeled])>=1
-%                         merged_flag=true;
-%                         % loop through the number of interactions across i j k
-%                         for l=1:min([i_labeled_minus,j_unlabeled,k_unlabeled])
-%                             mf=(factorial(i_labeled_minus)/factorial(i_labeled_minus-l))*(factorial(j_unlabeled)/factorial(j_unlabeled-l))*(factorial(k_unlabeled)/factorial(k_unlabeled-l))/(factorial(l));
-%                             % 0 to indicate only merge unlabeled minus
-%                             [new_i,new_j,new_k]=mergeTripleMinus(i_matrix,j_matrix,k_matrix,l,1);
-%                             new_input_info=curr_input_info;
-%
-%                             new_input_info{17}=curr_input_info{17}-2*l;
-%                             new_input_info{18}=curr_input_info{18}*mf;
-%                             new_input_info{i}=new_i;
-%                             new_input_info{j}=new_j;
-%                             new_input_info{k}=new_k;
-%                             new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
-%                             if (isempty(new_input_info{i}))
-%                                 new_input_info{i}=[];
-%                             end
-%                             if (isempty(new_input_info{j}))
-%                                 new_input_info{j}=[];
-%                             end
-%                             if (isempty(new_input_info{k}))
-%                                 new_input_info{k}=[];
-%                             end
-%                             new_possible_table{r}=new_input_info;
-%
-%                             r=r+1;
-%                         end
-%                     end
-%
-%                     % j is labeled and i,k are not labeled
-%                     if min([i_unlabeled,j_labeled_minus,k_unlabeled])>=1
-%                         merged_flag=true;
-%                         % loop through the number of interactions across i j k
-%                         for l=1:min([i_unlabeled,j_labeled_minus,k_unlabeled])
-%                             mf=(factorial(i_unlabeled)/factorial(i_unlabeled-l))*(factorial(j_labeled_minus)/factorial(j_labeled_minus-l))*(factorial(k_unlabeled)/factorial(k_unlabeled-l))/(factorial(l));
-%                             % 0 to indicate only merge unlabeled minus
-%                             [new_i,new_j,new_k]=mergeTripleMinus(i_matrix,j_matrix,k_matrix,l,2);
-%                             new_input_info=curr_input_info;
-%
-%                             new_input_info{17}=curr_input_info{17}-2*l;
-%                             new_input_info{18}=curr_input_info{18}*mf;
-%                             new_input_info{i}=new_i;
-%                             new_input_info{j}=new_j;
-%                             new_input_info{k}=new_k;
-%                             new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
-%                             if (isempty(new_input_info{i}))
-%                                 new_input_info{i}=[];
-%                             end
-%                             if (isempty(new_input_info{j}))
-%                                 new_input_info{j}=[];
-%                             end
-%                             if (isempty(new_input_info{k}))
-%                                 new_input_info{k}=[];
-%                             end
-%                             new_possible_table{r}=new_input_info;
-%                             r=r+1;
-%                         end
-%                     end
-%
-%                     % k is labeled and i,j are not labeled
-%                     if min([i_unlabeled,j_unlabeled,k_labeled_minus])>=1
-%                         merged_flag=true;
-%                         for l=1:min([i_unlabeled,j_unlabeled,k_labeled_minus])
-%                             mf=(factorial(i_unlabeled)/factorial(i_unlabeled-l))*(factorial(j_unlabeled)/factorial(j_unlabeled-l))*(factorial(k_labeled_minus)/factorial(k_labeled_minus-l))/(factorial(l));
-%                             % 0 to indicate only merge unlabeled minus
-%                             [new_i,new_j,new_k]=mergeTripleMinus(i_matrix,j_matrix,k_matrix,l,3);
-%                             new_input_info=curr_input_info;
-%
-%                             new_input_info{17}=curr_input_info{17}-2*l;
-%                             new_input_info{18}=curr_input_info{18}*mf;
-%                             new_input_info{i}=new_i;
-%                             new_input_info{j}=new_j;
-%                             new_input_info{k}=new_k;
-%                             new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
-%                             if (isempty(new_input_info{i}))
-%                                 new_input_info{i}=[];
-%                             end
-%                             if (isempty(new_input_info{j}))
-%                                 new_input_info{j}=[];
-%                             end
-%                             if (isempty(new_input_info{k}))
-%                                 new_input_info{k}=[];
-%                             end
-%                             new_possible_table{r}=new_input_info;
-%                             r=r+1;
-%                         end
-%                     end
-%                     if merged_flag
-%                         all_possible_table=[all_possible_table,new_possible_table];
-%                     end
-%                 end
-%             end
-%         end
-%     end
-%     table_index=table_index+1;
+% % debugging
+% new_input_info=curr_input_info;
+% 
+% new_input_info{17}=curr_input_info{17}-2*l;
+% new_input_info{18}=curr_input_info{18}*mf;
+% new_input_info{i}=new_i;
+% new_input_info{j}=new_j;
+% new_input_info{k}=new_k;
+% new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
+% % merging id tracks how three minues are merged
+% % [labeled,l,ijk, first index tells which one is labeled:i->1,j->2,k->3]
+% new_input_info{22}=[66666666666];
+% 
+% if (isempty(new_input_info{i}))
+%     new_input_info{i}=[];
+% end
+% if (isempty(new_input_info{j}))
+%     new_input_info{j}=[];
+% end
+% if (isempty(new_input_info{k}))
+%     new_input_info{k}=[];
+% end
+% all_possible_table=[all_possible_table,{new_input_info}];
+
+% for i=1:size(all_possible_table,2)
+%     curr_info=all_possible_table{i};
+%     % % printing here
+%     i
+%     cell_to_string(curr_info)
+% end
+% 'before mering 2 minus'
+% % remove all the duplicates
+% all_possible_table_strings=cell(size(all_possible_table));
+% for i=1:size(all_possible_table,2)
+%     all_possible_table_strings{i}=cell_to_string(all_possible_table{i});
+% end
+% all_possible_table_strings=unique(all_possible_table_strings,'stable');
+% new_all_possible_table=cell(size(all_possible_table_strings));
+% for i=1:size(all_possible_table_strings,2)
+%     new_all_possible_table{i}=string_to_cell(all_possible_table_strings{i});
+% end
+% all_possible_table=new_all_possible_table;
+% 'after removing duplicates'
+% for i=1:size(all_possible_table,2)
+%     curr_info=all_possible_table{i};
+%     % % printing here
+%     i
+%     cell_to_string(curr_info)
 % end
 
 
-% 2 minus
-table_index=1;
-while table_index<=size(all_possible_table,2)
-    curr_input_info=all_possible_table{table_index};
-    for i=1:15
-        for j=i:15
-            if isempty(intersect(indices_to_row(i,:),indices_to_row(j,:)))
-                    i_matrix=curr_input_info{i};
-                    j_matrix=curr_input_info{j};
-                    ij_union=union(indices_info(i,:),indices_info(j,:));
-                    k_index=setdiff([1,2,3,4,5,6],ij_union);
-                    k=rows_info(k_index(1),k_index(2));
-                    k_matrix=curr_input_info{k};
+% 2 minus unlabled only
+for i=1:15
+    for j=i:15
+        if ~isempty(intersect(indices_to_row(i,:),indices_to_row(j,:)))
+            continue
+        end
+        table_index=1;
+        new_possible_table=cell(1);
+        merged_flag=false;
+        r=1;
+        while table_index<=size(all_possible_table,2)
+            curr_input_info=all_possible_table{table_index};
+            i_matrix=curr_input_info{i};
+            j_matrix=curr_input_info{j};
+            ij_union=union(indices_info(i,:),indices_info(j,:));
+            k_index=setdiff([1,2,3,4,5,6],ij_union);
+            k=rows_info(k_index(1),k_index(2));
+            k_matrix=curr_input_info{k};
 
-                    if isempty(i_matrix) | isempty(j_matrix)
-                        continue
-                    end
-
-                    % above are basic check, now check if they contain
-                    % minus signs and at most one of these minus are
-                    % labeled
-
-                    num_i=sum(i_matrix(:,2) == -1);
-                    num_j=sum(j_matrix(:,2) == -1);
-
-                    col2IsZero = i_matrix(:, 2) == -1;
-                    col1IsPositive = i_matrix(:, 1) > 0;
-                    rowsMeetConditions = col2IsZero & col1IsPositive;
-                    i_labeled_minus = sum(rowsMeetConditions);
-
-                    col2IsZero = j_matrix(:, 2) == -1;
-                    col1IsPositive = j_matrix(:, 1) > 0;
-                    rowsMeetConditions = col2IsZero & col1IsPositive;
-                    j_labeled_minus = sum(rowsMeetConditions);
-
-                    i_unlabeled=num_i-i_labeled_minus;
-                    j_unlabeled=num_j-j_labeled_minus;
-
-                    new_possible_table=cell(1);
-                    merged_flag=false;
-                    r=1;
-                    % all two are unlabeled
-                    if min([i_unlabeled,j_unlabeled])>=1
-                        merged_flag=true;
-                        % loop through the number of interactions across i j k
-                        for l=1:min([i_unlabeled,j_unlabeled])
-                            mf=(factorial(i_unlabeled)/factorial(i_unlabeled-l))*(factorial(j_unlabeled)/factorial(j_unlabeled-l))/(factorial(l));
-                            % 0 to indicate only merge unlabeled minus
-                            [new_i,new_j,new_k]=mergeDoubleMinus(i_matrix,j_matrix,k_matrix,l,0);
-                            new_input_info=curr_input_info;
-                            new_input_info{17}=curr_input_info{17}-l;
-                            new_input_info{18}=curr_input_info{18}*mf;
-                            new_input_info{i}=new_i;
-                            new_input_info{j}=new_j;
-                            new_input_info{k}=new_k;
-                            new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
-
-                            if (isempty(new_input_info{i}))
-                                new_input_info{i}=[];
-                            end
-                            if (isempty(new_input_info{j}))
-                                new_input_info{j}=[];
-                            end
-                            if (isempty(new_input_info{k}))
-                                new_input_info{k}=[];
-
-                            end
-                            new_possible_table{r}=new_input_info;
-                            r=r+1;
-                        end
-                    end
-
-                    % i is labeled and j is not labeled
-                   if min([i_labeled_minus,j_unlabeled])>=1
-                        merged_flag=true;
-                        % loop through the number of interactions across i j k
-                        for l=1:min([i_labeled_minus,j_unlabeled])
-                            mf=(factorial(i_labeled_minus)/factorial(i_labeled_minus-l))*(factorial(j_unlabeled)/factorial(j_unlabeled-l))/(factorial(l));
-                            % 0 to indicate only merge unlabeled minus
-                            [new_i,new_j,new_k]=mergeDoubleMinus(i_matrix,j_matrix,k_matrix,l,1);
-                            new_input_info=curr_input_info;
-
-                            new_input_info{17}=curr_input_info{17}-l;
-                            new_input_info{18}=curr_input_info{18}*mf;
-                            new_input_info{i}=new_i;
-                            new_input_info{j}=new_j;
-                            new_input_info{k}=new_k;
-                            new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
-                            if (isempty(new_input_info{i}))
-                                new_input_info{i}=[];
-                            end
-                            if (isempty(new_input_info{j}))
-                                new_input_info{j}=[];
-                            end
-                            if (isempty(new_input_info{k}))
-                                new_input_info{k}=[];
-
-                            end
-                            new_possible_table{r}=new_input_info;
-                            r=r+1;
-                        end
-                    end
-                    % j is labeled and i is not labeled
-                    % all two are unlabeled
-                    if min([i_unlabeled,j_labeled_minus])>=1
-                        merged_flag=true;
-                        % loop through the number of interactions across i j k
-                        for l=1:min([i_unlabeled,j_labeled_minus])
-                            mf=(factorial(i_unlabeled)/factorial(i_unlabeled-l))*(factorial(j_labeled_minus)/factorial(j_labeled_minus-l))/(factorial(l));
-                            % 0 to indicate only merge unlabeled minus
-                            [new_i,new_j,new_k]=mergeDoubleMinus(i_matrix,j_matrix,k_matrix,l,2);
-                            new_input_info=curr_input_info;
-
-                            new_input_info{17}=curr_input_info{17}-l;
-                            new_input_info{18}=curr_input_info{18}*mf;
-                            new_input_info{i}=new_i;
-                            new_input_info{j}=new_j;
-                            new_input_info{k}=new_k;
-                            new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
-                            if (isempty(new_input_info{i}))
-                                new_input_info{i}=[];
-                            end
-                            if (isempty(new_input_info{j}))
-                                new_input_info{j}=[];
-                            end
-                            if (isempty(new_input_info{k}))
-                                new_input_info{k}=[];
-
-                            end
-                            new_possible_table{r}=new_input_info;
-                            r=r+1;
-                        end
-                    end
-
-                    if merged_flag
-                        all_possible_table=[all_possible_table,new_possible_table];
-                    end
+            if isempty(i_matrix) | isempty(j_matrix)
+                table_index=table_index+1;
+                continue
             end
+
+            % above are basic check, now check if they contain
+            % minus signs and at most one of these minus are
+            % labeled
+
+            num_i=sum(i_matrix(:,2) == -1);
+            num_j=sum(j_matrix(:,2) == -1);
+
+            col2IsZero = i_matrix(:, 2) == -1;
+            col1IsPositive = i_matrix(:, 1) > 0;
+            rowsMeetConditions = col2IsZero & col1IsPositive;
+            i_labeled_minus = sum(rowsMeetConditions);
+
+            col2IsZero = j_matrix(:, 2) == -1;
+            col1IsPositive = j_matrix(:, 1) > 0;
+            rowsMeetConditions = col2IsZero & col1IsPositive;
+            j_labeled_minus = sum(rowsMeetConditions);
+
+            i_unlabeled=num_i-i_labeled_minus;
+            j_unlabeled=num_j-j_labeled_minus;
+
+            % all two are unlabeled
+            if min([i_unlabeled,j_unlabeled])>=1
+                merged_flag=true;
+                % loop through the number of interactions across i j k
+                for l=1:min([i_unlabeled,j_unlabeled])
+                    mf=(factorial(i_unlabeled)/factorial(i_unlabeled-l))*(factorial(j_unlabeled)/factorial(j_unlabeled-l))/(factorial(l));
+                    % 0 to indicate only merge unlabeled minus
+                    [new_i,new_j,new_k]=mergeDoubleMinus(i_matrix,j_matrix,k_matrix,l,0);
+                    new_input_info=curr_input_info;
+                    new_input_info{17}=curr_input_info{17}-l;
+                    new_input_info{18}=curr_input_info{18}*mf;
+                    new_input_info{i}=new_i;
+                    new_input_info{j}=new_j;
+                    new_input_info{k}=new_k;
+                    new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
+
+                    if (isempty(new_input_info{i}))
+                        new_input_info{i}=[];
+                    end
+                    if (isempty(new_input_info{j}))
+                        new_input_info{j}=[];
+                    end
+                    if (isempty(new_input_info{k}))
+                        new_input_info{k}=[];
+
+                    end
+                    new_possible_table{r}=new_input_info;
+                    r=r+1;
+                end
+            end
+            table_index=table_index+1;
+        end
+        if merged_flag
+            all_possible_table=[all_possible_table,new_possible_table];
         end
     end
-    table_index=table_index+1;
 end
 
-% remove all the duplicates
-all_possible_table_strings=cell(size(all_possible_table));
-for i=1:size(all_possible_table,2)
-    all_possible_table_strings{i}=cell_to_string(all_possible_table{i});
-end
-all_possible_table_strings=unique(all_possible_table_strings,'stable');
-new_all_possible_table=cell(size(all_possible_table_strings));
-for i=1:size(all_possible_table_strings,2)
-    new_all_possible_table{i}=string_to_cell(all_possible_table_strings{i});
-end
-all_possible_table=new_all_possible_table;
+% i is labeled and j is not labeled
+for i=1:15
+    for j=i:15
+        if ~isempty(intersect(indices_to_row(i,:),indices_to_row(j,:)))
+            continue
+        end
+        table_index=1;
+        new_possible_table=cell(1);
+        merged_flag=false;
+        r=1;
+        while table_index<=size(all_possible_table,2)
+            curr_input_info=all_possible_table{table_index};
+            i_matrix=curr_input_info{i};
+            j_matrix=curr_input_info{j};
+            ij_union=union(indices_info(i,:),indices_info(j,:));
+            k_index=setdiff([1,2,3,4,5,6],ij_union);
+            k=rows_info(k_index(1),k_index(2));
+            k_matrix=curr_input_info{k};
 
+            if isempty(i_matrix) | isempty(j_matrix)
+                table_index=table_index+1;
+                continue
+            end
+
+            % above are basic check, now check if they contain
+            % minus signs and at most one of these minus are
+            % labeled
+
+            num_i=sum(i_matrix(:,2) == -1);
+            num_j=sum(j_matrix(:,2) == -1);
+
+            col2IsZero = i_matrix(:, 2) == -1;
+            col1IsPositive = i_matrix(:, 1) > 0;
+            rowsMeetConditions = col2IsZero & col1IsPositive;
+            i_labeled_minus = sum(rowsMeetConditions);
+
+            col2IsZero = j_matrix(:, 2) == -1;
+            col1IsPositive = j_matrix(:, 1) > 0;
+            rowsMeetConditions = col2IsZero & col1IsPositive;
+            j_labeled_minus = sum(rowsMeetConditions);
+
+            i_unlabeled=num_i-i_labeled_minus;
+            j_unlabeled=num_j-j_labeled_minus;
+
+            if min([i_labeled_minus,j_unlabeled])>=1
+                merged_flag=true;
+                % loop through the number of interactions across i j k
+                for l=1:min([i_labeled_minus,j_unlabeled])
+                    mf=(factorial(i_labeled_minus)/factorial(i_labeled_minus-l))*(factorial(j_unlabeled)/factorial(j_unlabeled-l))/(factorial(l));
+                    % 0 to indicate only merge unlabeled minus
+                    [new_i,new_j,new_k]=mergeDoubleMinus(i_matrix,j_matrix,k_matrix,l,1);
+                    new_input_info=curr_input_info;
+
+                    new_input_info{17}=curr_input_info{17}-l;
+                    new_input_info{18}=curr_input_info{18}*mf;
+                    new_input_info{i}=new_i;
+                    new_input_info{j}=new_j;
+                    new_input_info{k}=new_k;
+                    new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
+                    if (isempty(new_input_info{i}))
+                        new_input_info{i}=[];
+                    end
+                    if (isempty(new_input_info{j}))
+                        new_input_info{j}=[];
+                    end
+                    if (isempty(new_input_info{k}))
+                        new_input_info{k}=[];
+
+                    end
+                    new_possible_table{r}=new_input_info;
+                    r=r+1;
+                end
+            end
+            table_index=table_index+1;
+        end
+        if merged_flag
+            all_possible_table=[all_possible_table,new_possible_table];
+        end
+    end
+end
+
+% i is labeled and j is not labeled
+for i=1:15
+    for j=i:15
+        if ~isempty(intersect(indices_to_row(i,:),indices_to_row(j,:)))
+            continue
+        end
+        table_index=1;
+        new_possible_table=cell(1);
+        merged_flag=false;
+        r=1;
+        while table_index<=size(all_possible_table,2)
+            curr_input_info=all_possible_table{table_index};
+            i_matrix=curr_input_info{i};
+            j_matrix=curr_input_info{j};
+            ij_union=union(indices_info(i,:),indices_info(j,:));
+            k_index=setdiff([1,2,3,4,5,6],ij_union);
+            k=rows_info(k_index(1),k_index(2));
+            k_matrix=curr_input_info{k};
+
+            if isempty(i_matrix) | isempty(j_matrix)
+                table_index=table_index+1;
+                continue
+            end
+
+            % above are basic check, now check if they contain
+            % minus signs and at most one of these minus are
+            % labeled
+
+            num_i=sum(i_matrix(:,2) == -1);
+            num_j=sum(j_matrix(:,2) == -1);
+
+            col2IsZero = i_matrix(:, 2) == -1;
+            col1IsPositive = i_matrix(:, 1) > 0;
+            rowsMeetConditions = col2IsZero & col1IsPositive;
+            i_labeled_minus = sum(rowsMeetConditions);
+
+            col2IsZero = j_matrix(:, 2) == -1;
+            col1IsPositive = j_matrix(:, 1) > 0;
+            rowsMeetConditions = col2IsZero & col1IsPositive;
+            j_labeled_minus = sum(rowsMeetConditions);
+
+            i_unlabeled=num_i-i_labeled_minus;
+            j_unlabeled=num_j-j_labeled_minus;
+
+            if min([i_unlabeled,j_labeled_minus])>=1
+                    merged_flag=true;
+                    % loop through the number of interactions across i j k
+                    for l=1:min([i_unlabeled,j_labeled_minus])
+                        mf=(factorial(i_unlabeled)/factorial(i_unlabeled-l))*(factorial(j_labeled_minus)/factorial(j_labeled_minus-l))/(factorial(l));
+                        % 0 to indicate only merge unlabeled minus
+                        [new_i,new_j,new_k]=mergeDoubleMinus(i_matrix,j_matrix,k_matrix,l,2);
+                        new_input_info=curr_input_info;
+
+                        new_input_info{17}=curr_input_info{17}-l;
+                        new_input_info{18}=curr_input_info{18}*mf;
+                        new_input_info{i}=new_i;
+                        new_input_info{j}=new_j;
+                        new_input_info{k}=new_k;
+                        new_input_info{21}=curr_input_info{21}*sign_mergeMinus(i,j,k,l,curr_input_info);
+                        if (isempty(new_input_info{i}))
+                            new_input_info{i}=[];
+                        end
+                        if (isempty(new_input_info{j}))
+                            new_input_info{j}=[];
+                        end
+                        if (isempty(new_input_info{k}))
+                            new_input_info{k}=[];
+
+                        end
+                        new_possible_table{r}=new_input_info;
+                        r=r+1;
+                    end
+                end
+            table_index=table_index+1;
+        end
+        if merged_flag
+            all_possible_table=[all_possible_table,new_possible_table];
+        end
+    end
+end
+
+% TO-DO: we can safely delete the part of removing the duplicates as there
+% will not be any duplicates, also the key/trace of merging three minuses
+% is useless now. Prove: any table obtained is different??? This should be
+% doable by analyzing the trace (by hand)
+
+% % remove all the duplicates
+% all_possible_table_strings=cell(size(all_possible_table));
+% for i=1:size(all_possible_table,2)
+%     all_possible_table_strings{i}=cell_to_string(all_possible_table{i});
+% end
+% all_possible_table_strings=unique(all_possible_table_strings,'stable');
+% new_all_possible_table=cell(size(all_possible_table_strings));
+% for i=1:size(all_possible_table_strings,2)
+%     new_all_possible_table{i}=string_to_cell(all_possible_table_strings{i});
+% end
+% all_possible_table=new_all_possible_table;
 
 % use all possible table to obtain the generating function
 latex_string='(';
 
 for i=1:size(all_possible_table,2)
     curr_info=all_possible_table{i};
+    % % printing here
+    % i
+    % cell_to_string(curr_info)
     curr_table=cell(1,15);
     output_table=cell(1,15);
+
+
     for j=1:15
         if isempty(curr_info{j})
             curr_table{j}=[];
@@ -847,6 +828,7 @@ for i=1:size(all_possible_table,2)
         denominator=j*(j+2)*(j+4)*denominator;
     end
     s=sprintf('%d(O0fun[t]/N0fun[s])(s^%d)(D[N0fun[s], {s, %d}])(%d/%d)+',curr_info{18},k,k,pairing_number*curr_info{20}*curr_info{21},denominator);
+    
     % s=sprintf('\\frac{O(t)}{N(\\frac{t}{(1-(\\mu_4-3)t)^3})}(\\frac{t}{(1-(\\mu_4-3)t)^3})^{%d} \\frac{d^{%d}N}{dt^{%d}}(\\frac{t}{(1-(\\mu_4-3)t)^3})\\frac{%d}{%d}+',k,k,k,pairing_number*curr_info{20}*curr_info{21},denominator);
 
     latex_string=append(latex_string,s);
@@ -1082,7 +1064,7 @@ end
 function s=cell_to_string(C)
 s='';
 for i=1:15
-    s=append(s,sortrows(mat2str(C{i})));
+    s=append(s,mat2str(sortrows(C{i})));
     s=append(s,'|');
 end
 for i=16:21
@@ -1094,8 +1076,9 @@ s=append(s,'|');
 end
 
 function C = string_to_cell(s)
-C = cell(1, 21);  % Initialize the cell array
+C = cell(1, 22);  % Initialize the cell array
 % Split the string into two parts: before and after the first '|'
+
 parts = split(s, '|');
 
 % Extract the first 15 cells using eval
@@ -1103,10 +1086,10 @@ for i = 1:15
     C{i} = eval(parts{i});
 end
 
-% Extract the remaining 6 cells
+% Extract the remaining 7 cells
 for i = 16:21
     C{i} = str2double(parts{i});
 end
-
+C{22}=eval(parts{22});
 end
 
